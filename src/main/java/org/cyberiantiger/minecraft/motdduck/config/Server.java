@@ -32,10 +32,12 @@ public class Server {
             }
         }
         InetSocketAddress namedVirtualHost = connection.getVirtualHost();
-        String namedHost = namedVirtualHost.getHostName() + ":" + namedVirtualHost.getPort();
-        for (Map.Entry<Pattern, String> e : namedHostLookup.entrySet()) {
-            if (e.getKey().matcher(namedHost).matches()) {
-                return e.getValue();
+        if (namedVirtualHost != null) {
+            String namedHost = namedVirtualHost.getHostName() + ":" + namedVirtualHost.getPort();
+            for (Map.Entry<Pattern, String> e : namedHostLookup.entrySet()) {
+                if (e.getKey().matcher(namedHost).matches()) {
+                    return e.getValue();
+                }
             }
         }
         return defaultProfile;
