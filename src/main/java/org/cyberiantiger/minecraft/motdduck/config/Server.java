@@ -5,6 +5,7 @@
 package org.cyberiantiger.minecraft.motdduck.config;
 
 import java.net.InetSocketAddress;
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -25,9 +26,13 @@ public class Server {
     public String findProfileName(Main plugin, PendingConnection connection) {
         synchronized (this) {
             if (namedHostLookup == null) {
-                namedHostLookup = new LinkedHashMap<Pattern, String>(namedHosts.size());
-                for (Map.Entry<String, String> e : namedHosts.entrySet()) {
-                    namedHostLookup.put(asRegex(e.getKey()), e.getValue());
+                if (namedHosts == null) {
+                    namedHostLookup = Collections.emptyMap();
+                } else {
+                    namedHostLookup = new LinkedHashMap<Pattern, String>(namedHosts.size());
+                    for (Map.Entry<String, String> e : namedHosts.entrySet()) {
+                        namedHostLookup.put(asRegex(e.getKey()), e.getValue());
+                    }
                 }
             }
         }
