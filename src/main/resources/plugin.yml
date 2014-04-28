@@ -1,4 +1,4 @@
-name: MOTDDuck
+name: DuckMOTD
 main : org.cyberiantiger.minecraft.motdduck.Main
 version: ${version}
 author: cybertiger
