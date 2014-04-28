@@ -1,0 +1,14 @@
+profile:
+        default:
+                icon: server.png
+                protocolName: 1.7.2
+                protocolVersion: 4
+                staticMotd:
+                        - This server is great
+                dynamicMotd:
+                        - Hi %s!
+server:
+        '*:*':
+                defaultProfile: default
+                namedHosts:
+                        your.server.here: default
