@@ -76,13 +76,17 @@
             <id>sonatype-s</id>
             <url>https://oss.sonatype.org/content/groups/public/</url>
         </repository>
+        <repository>
+            <id>cyberiantiger.repo</id>
+            <url>http://cyberiantiger.org/maven/</url>
+        </repository>
     </repositories>
 
     <dependencies>
         <dependency>
             <groupId>net.md-5</groupId>
             <artifactId>bungeecord-api</artifactId>
-            <version>1.7-SNAPSHOT</version>
+            <version>1.7-cybertiger-1</version>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
