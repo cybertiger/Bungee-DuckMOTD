@@ -32,6 +32,13 @@ import org.cyberiantiger.minecraft.motdduck.Main;
  */
 public class Profile {
     private static final PlayerInfo[] EMPTY_PLAYER_LIST = new PlayerInfo[0];
+    private static final Comparator<PlayerInfo> PLAYER_INFO_COMPARATOR =
+            new Comparator<PlayerInfo>() {
+                @Override
+                public int compare(PlayerInfo o1, PlayerInfo o2) {
+                    return o1.getName().compareTo(o2.getName());
+                }
+            };
 
     private enum PlayerListType {
         NONE() {
@@ -44,23 +51,13 @@ public class Profile {
             private final int MAX_PLAYERS = 10;
             @Override
             public PlayerInfo[] getPlayerInfos(Profile profile, List<ProxiedPlayer> players) {
-                PlayerInfo[] result = new PlayerInfo[players.size() < MAX_PLAYERS ? players.size() : MAX_PLAYERS];
-                boolean full = false;
+                int maxPlayers = profile.maxPlayerList > 0 ? profile.maxPlayerList : MAX_PLAYERS;
+                PlayerInfo[] result = new PlayerInfo[players.size() < maxPlayers ? players.size() : maxPlayers];
                 for (int i = 0; i < result.length; i++) {
-                    if (i == MAX_PLAYERS-1 && !players.isEmpty()) {
-                        result[i] = new PlayerInfo(String.format(".... %d more ....", players.size()), "");
-                        full = true;
-                    } else {
-                        ProxiedPlayer player = players.remove(RNG.get().nextInt(players.size()));
-                        result[i] = new PlayerInfo(player.getName(), player.getUniqueId());
-                    }
+                    ProxiedPlayer player = players.remove(RNG.get().nextInt(players.size()));
+                    result[i] = new PlayerInfo(player.getName(), player.getUniqueId());
                 }
-                Arrays.sort(result, 0, full ? result.length - 1 : result.length, new Comparator<PlayerInfo>() {
-                    @Override
-                    public int compare(PlayerInfo o1, PlayerInfo o2) {
-                        return o1.getName().compareTo(o2.getName());
-                    }
-                });
+                Arrays.sort(result, PLAYER_INFO_COMPARATOR);
                 return result;
             }
         },
@@ -91,6 +88,7 @@ public class Profile {
     private int maxPlayers;
     private List<String> playerListServers;
     private String playerListType;
+    private int maxPlayerList;
     private List<String> fixedPlayerList;
 
     private transient boolean loadedFavicon;
