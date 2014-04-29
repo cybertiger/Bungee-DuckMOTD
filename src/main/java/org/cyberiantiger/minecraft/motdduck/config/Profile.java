@@ -6,6 +6,8 @@ package org.cyberiantiger.minecraft.motdduck.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,14 +45,22 @@ public class Profile {
             @Override
             public PlayerInfo[] getPlayerInfos(Profile profile, List<ProxiedPlayer> players) {
                 PlayerInfo[] result = new PlayerInfo[players.size() < MAX_PLAYERS ? players.size() : MAX_PLAYERS];
+                boolean full = false;
                 for (int i = 0; i < result.length; i++) {
                     if (i == MAX_PLAYERS-1 && !players.isEmpty()) {
                         result[i] = new PlayerInfo(String.format(".... %d more ....", players.size()), (UUID)null);
+                        full = true;
                     } else {
                         ProxiedPlayer player = players.remove(RNG.get().nextInt(players.size()));
                         result[i] = new PlayerInfo(player.getName(), player.getUniqueId());
                     }
                 }
+                Arrays.sort(result, 0, full ? result.length - 1 : result.length, new Comparator<PlayerInfo>() {
+                    @Override
+                    public int compare(PlayerInfo o1, PlayerInfo o2) {
+                        return o1.getName().compareTo(o2.getName());
+                    }
+                });
                 return result;
             }
         },
