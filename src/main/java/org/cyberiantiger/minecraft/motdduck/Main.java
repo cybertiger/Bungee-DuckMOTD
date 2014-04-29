@@ -13,6 +13,8 @@ import java.io.IOException;
 import java.util.logging.Level;
 import net.md_5.bungee.api.Favicon;
 import net.md_5.bungee.api.ServerPing;
+import net.md_5.bungee.api.ServerPing.PlayerInfo;
+import net.md_5.bungee.api.ServerPing.Players;
 import net.md_5.bungee.api.ServerPing.Protocol;
 import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.connection.PendingConnection;
@@ -154,6 +156,7 @@ public class Main extends Plugin implements Listener {
                     motd = profile.getStaticMotd();
                     motd = String.format(motd, (Object)null);
                 }
+                Players players = profile.getPlayers(this);
                 if (icon != null) {
                     response.setFavicon(icon);
                 }
@@ -162,6 +165,9 @@ public class Main extends Plugin implements Listener {
                 }
                 if (motd != null) {
                     response.setDescription(motd);
+                }
+                if (players != null) {
+                    response.setPlayers(players);
                 }
             }
         }
