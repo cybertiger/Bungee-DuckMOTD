@@ -48,7 +48,7 @@ public class Profile {
                 boolean full = false;
                 for (int i = 0; i < result.length; i++) {
                     if (i == MAX_PLAYERS-1 && !players.isEmpty()) {
-                        result[i] = new PlayerInfo(String.format(".... %d more ....", players.size()), (UUID)null);
+                        result[i] = new PlayerInfo(String.format(".... %d more ....", players.size()), "");
                         full = true;
                     } else {
                         ProxiedPlayer player = players.remove(RNG.get().nextInt(players.size()));
@@ -74,7 +74,7 @@ public class Profile {
                 }
                 PlayerInfo[] result = new PlayerInfo[profile.fixedPlayerList.size()];
                 for (int i = 0; i < profile.fixedPlayerList.size(); i++) {
-                    result[i] = new PlayerInfo(String.format(profile.fixedPlayerList.get(i),playerCount,maxPlayers), (UUID) null);
+                    result[i] = new PlayerInfo(String.format(profile.fixedPlayerList.get(i),playerCount,maxPlayers), "");
                 }
                 return result;
             }
