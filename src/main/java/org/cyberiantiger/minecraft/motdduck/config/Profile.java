@@ -36,7 +36,7 @@ public class Profile {
             new Comparator<PlayerInfo>() {
                 @Override
                 public int compare(PlayerInfo o1, PlayerInfo o2) {
-                    return o1.getName().compareTo(o2.getName());
+                    return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
                 }
             };
 
