@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.util.logging.Level;
 import net.md_5.bungee.api.Favicon;
 import net.md_5.bungee.api.ServerPing;
-import net.md_5.bungee.api.ServerPing.PlayerInfo;
 import net.md_5.bungee.api.ServerPing.Players;
 import net.md_5.bungee.api.ServerPing.Protocol;
 import net.md_5.bungee.api.config.ListenerInfo;
