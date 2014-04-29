@@ -6,7 +6,9 @@ package org.cyberiantiger.minecraft.motdduck.config;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -39,18 +41,26 @@ public class Profile {
                     return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
                 }
             };
+    private static final Comparator<ServerInfo> SERVER_COMPARATOR =
+            new Comparator<ServerInfo>() {
+                @Override
+                public int compare(ServerInfo o1, ServerInfo o2) {
+                    return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+                }
+            };
+    private static final String DEFAULT_NETWORK_SERVER_FORMAT = "%s (%d/%d)";
 
     private enum PlayerListType {
         NONE() {
             @Override
-            public PlayerInfo[] getPlayerInfos(Profile profile, List<ProxiedPlayer> players) {
+            public PlayerInfo[] getPlayerInfos(Main plugin, Profile profile, List<ProxiedPlayer> players) {
                 return EMPTY_PLAYER_LIST;
             }
         },
         PLAYERS() {
             private final int MAX_PLAYERS = 10;
             @Override
-            public PlayerInfo[] getPlayerInfos(Profile profile, List<ProxiedPlayer> players) {
+            public PlayerInfo[] getPlayerInfos(Main plugin, Profile profile, List<ProxiedPlayer> players) {
                 int maxPlayers = profile.maxPlayerList > 0 ? profile.maxPlayerList : MAX_PLAYERS;
                 PlayerInfo[] result = new PlayerInfo[players.size() < maxPlayers ? players.size() : maxPlayers];
                 for (int i = 0; i < result.length; i++) {
@@ -63,21 +73,48 @@ public class Profile {
         },
         FIXED() {
             @Override
-            public PlayerInfo[] getPlayerInfos(Profile profile, List<ProxiedPlayer> players) {
+            public PlayerInfo[] getPlayerInfos(Main plugin, Profile profile, List<ProxiedPlayer> players) {
                 int playerCount = players.size();
                 int maxPlayers = profile.maxPlayers;
-                if (profile.fixedPlayerList == null) {
+                if (profile.playerListFixed == null) {
                     return EMPTY_PLAYER_LIST;
                 }
-                PlayerInfo[] result = new PlayerInfo[profile.fixedPlayerList.size()];
-                for (int i = 0; i < profile.fixedPlayerList.size(); i++) {
-                    result[i] = new PlayerInfo(String.format(profile.fixedPlayerList.get(i),playerCount,maxPlayers), "");
+                PlayerInfo[] result = new PlayerInfo[profile.playerListFixed.size()];
+                for (int i = 0; i < profile.playerListFixed.size(); i++) {
+                    result[i] = new PlayerInfo(String.format(profile.playerListFixed.get(i),playerCount,maxPlayers), "");
                 }
                 return result;
             }
+        },
+        NETWORK() {
+            @Override
+            public PlayerInfo[] getPlayerInfos(Main plugin, Profile profile, List<ProxiedPlayer> players) {
+                int playerCount = players.size();
+                int maxPlayers = profile.maxPlayers;
+                List<PlayerInfo> result = new ArrayList<PlayerInfo>();
+                if (profile.playerListNetworkHeader != null) {
+                    for (String s : profile.playerListNetworkHeader) {
+                        result.add(new PlayerInfo(String.format(s, playerCount, maxPlayers), ""));
+                    }
+                }
+                for (ServerInfo info : profile.getPlayerListNetworkServers(plugin)) {
+                    int serverPlayerCount = info.getPlayers().size();
+                    String format = profile.playerListNetworkServerFormat;
+                    if (format == null) {
+                        format = DEFAULT_NETWORK_SERVER_FORMAT;
+                    }
+                    result.add(new PlayerInfo(String.format(format, info.getName(), serverPlayerCount, maxPlayers), ""));
+                }
+                if (profile.playerListNetworkFooter != null) {
+                    for (String s : profile.playerListNetworkFooter) {
+                        result.add(new PlayerInfo(String.format(s, playerCount, maxPlayers), ""));
+                    }
+                }
+                return result.toArray(new PlayerInfo[result.size()]);
+            }
         };
 
-        public abstract PlayerInfo[] getPlayerInfos(Profile profile, List<ProxiedPlayer> players);
+        public abstract PlayerInfo[] getPlayerInfos(Main plugin, Profile profile, List<ProxiedPlayer> players);
 
     }
     private String icon;
@@ -89,7 +126,12 @@ public class Profile {
     private List<String> playerListServers;
     private String playerListType;
     private int maxPlayerList;
-    private List<String> fixedPlayerList;
+    private List<String> playerListFixed;
+    private List<String> playerListNetworkHeader;
+    private List<String> playerListNetworkServers;
+    private List<String> playerListNetworkFooter;
+    private String playerListNetworkServerFormat;
+
 
     private transient boolean loadedFavicon;
     private transient Favicon favicon;
@@ -98,6 +140,7 @@ public class Profile {
     private transient boolean loadedPlayerList;
     private transient Set<ServerInfo> playerListServersSet;
     private transient PlayerListType playerListTypeEnum;
+    private transient List<ServerInfo> playerListNetworkServersList;
 
     private static final ThreadLocal<Random> RNG = new ThreadLocal<Random>() {
 
@@ -191,6 +234,26 @@ public class Profile {
                 }
             }
         }
-        return new Players(maxPlayers, result.size(), playerListTypeEnum.getPlayerInfos(this, result));
+        return new Players(maxPlayers, result.size(), playerListTypeEnum.getPlayerInfos(plugin, this, result));
+    }
+
+    private Iterable<ServerInfo> getPlayerListNetworkServers(Main plugin) {
+        synchronized (this) {
+            if (playerListNetworkServersList == null) {
+                playerListNetworkServersList = new ArrayList();
+                if (playerListNetworkServers != null) {
+                    for (String s : playerListNetworkServers) {
+                        ServerInfo info = plugin.getProxy().getServerInfo(s);
+                        if (info != null) {
+                            playerListNetworkServersList.add(info);
+                        }
+                    }
+                } else {
+                    playerListNetworkServersList.addAll(plugin.getProxy().getServers().values());
+                    Collections.sort(playerListNetworkServersList, SERVER_COMPARATOR);
+                }
+            }
+            return playerListNetworkServersList;
+        }
     }
 }
