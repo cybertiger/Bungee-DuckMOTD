@@ -101,11 +101,6 @@
             <version>1.13</version>
         </dependency>
     </dependencies>
-
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <distributionManagement>
         <repository>
             <id>cyberiantiger.repo</id>
