@@ -37,9 +37,6 @@ profiles:
 #        dynamicMotd:
 #            - Hi %s!
 
-        # Optionally a player list can be sent back to the client
-        # (shown in the mouse over for the server version in the client).
-        # We support 3 differents types of player list.
 
         # Maximum number of players to report to the client.
 #        maxPlayers: 200
@@ -50,6 +47,12 @@ profiles:
 #        playerListNetworkServers: 
 #            - server1
 #            - server2
+
+        # A player list can be sent back to the client
+        # (shown in the mouse over for the server version in the client).
+        # We support 3 differents types of player list.
+        # The player list is affected by the maxPlayer setting and the
+        # playerListNetworkServers setting, if set.
 
         # None, the default.
 #        playerListType: NONE
