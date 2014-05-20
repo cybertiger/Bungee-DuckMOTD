@@ -155,7 +155,6 @@ public class Main extends Plugin implements Listener {
                     motd = String.format(motd, user);
                 } else {
                     motd = profile.getStaticMotd();
-                    motd = String.format(motd, (Object)null);
                 }
                 Players players = profile.getPlayers(this);
                 if (icon != null) {

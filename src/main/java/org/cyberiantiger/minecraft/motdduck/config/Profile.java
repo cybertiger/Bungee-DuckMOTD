@@ -49,7 +49,6 @@ public class Profile {
                     return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
                 }
             };
-    private static final String DEFAULT_NETWORK_SERVER_FORMAT = "%s (%d/%d)";
 
     private enum PlayerListType {
         NONE() {
@@ -59,11 +58,9 @@ public class Profile {
             }
         },
         PLAYERS() {
-            private final int MAX_PLAYERS = 10;
             @Override
             public PlayerInfo[] getPlayerInfos(Main plugin, Profile profile, List<ProxiedPlayer> players) {
-                int maxPlayers = profile.maxPlayerList > 0 ? profile.maxPlayerList : MAX_PLAYERS;
-                PlayerInfo[] result = new PlayerInfo[players.size() < maxPlayers ? players.size() : maxPlayers];
+                PlayerInfo[] result = new PlayerInfo[Math.min(players.size(), profile.maxPlayerList)];
                 for (int i = 0; i < result.length; i++) {
                     ProxiedPlayer player = players.remove(RNG.get().nextInt(players.size()));
                     result[i] = new PlayerInfo(player.getName(), player.getUniqueId());
@@ -101,9 +98,6 @@ public class Profile {
                 for (ServerInfo info : profile.getPlayerListNetworkServers(plugin)) {
                     int serverPlayerCount = info.getPlayers().size();
                     String format = profile.playerListNetworkServerFormat;
-                    if (format == null) {
-                        format = DEFAULT_NETWORK_SERVER_FORMAT;
-                    }
                     result.add(new PlayerInfo(String.format(format, info.getName(), serverPlayerCount, maxPlayers), ""));
                 }
                 if (profile.playerListNetworkFooter != null) {
@@ -118,25 +112,28 @@ public class Profile {
         public abstract PlayerInfo[] getPlayerInfos(Main plugin, Profile profile, List<ProxiedPlayer> players);
 
     }
+
     private String icon;
     private Map<Integer, DuckProtocol> protocolVersions;
     private List<String> dynamicMotd;
     private List<String> staticMotd;
     private int maxPlayers;
     private List<String> playerListServers;
-    private String playerListType;
-    private int maxPlayerList;
+    private PlayerListType playerListType = PlayerListType.NONE;
+
+    private int maxPlayerList = 10;
+
     private List<String> playerListFixed;
+
     private List<String> playerListNetworkHeader;
     private List<String> playerListNetworkServers;
     private List<String> playerListNetworkFooter;
-    private String playerListNetworkServerFormat;
+    private String playerListNetworkServerFormat = "%s (%d/%d)";
 
     private transient boolean loadedFavicon;
     private transient Favicon favicon;
     private transient boolean loadedPlayerList;
     private transient Set<ServerInfo> playerListServersSet;
-    private transient PlayerListType playerListTypeEnum;
     private transient List<ServerInfo> playerListNetworkServersList;
 
     private static final ThreadLocal<Random> RNG = new ThreadLocal<Random>() {
@@ -214,13 +211,6 @@ public class Profile {
                 }
                 loadedPlayerList = true;
             }
-            try {
-                playerListTypeEnum = PlayerListType.valueOf(playerListType.toUpperCase());
-            } catch (IllegalArgumentException ex) {
-                playerListTypeEnum = PlayerListType.NONE;
-            } catch (NullPointerException ex) {
-                playerListTypeEnum = PlayerListType.NONE;
-            }
         }
         List<ProxiedPlayer> result = new LinkedList<ProxiedPlayer>();
         for (ProxiedPlayer player : plugin.getProxy().getPlayers()) {
@@ -235,7 +225,7 @@ public class Profile {
                 }
             }
         }
-        return new Players(maxPlayers, result.size(), playerListTypeEnum.getPlayerInfos(plugin, this, result));
+        return new Players(maxPlayers, result.size(), playerListType.getPlayerInfos(plugin, this, result));
     }
 
     private Iterable<ServerInfo> getPlayerListNetworkServers(Main plugin) {

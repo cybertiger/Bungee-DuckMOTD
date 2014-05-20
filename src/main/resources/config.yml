@@ -1,4 +1,4 @@
-# List of profiles
+# List of profiles.
 #
 # Most keys are optional and if omitted will simply leave 
 # the default values in the ServerPingResponse
@@ -6,7 +6,10 @@ profiles:
     default:
         # Favourite icon, this must be a 64x64 png file, which can be found
         # in plugins/DuckChat
-        icon: server.png
+        #
+#        icon: server.png
+
+            
         # List of client protocol versions, and what version to
         # reply with for each version, if there is a value for 0
         # then this protocol version is returned if we don't 
@@ -22,19 +25,77 @@ profiles:
         # 
         # Format codes are supported, use the § symbol.
         # 
+        # Multiline Motds can be created by including multiline strings.
+        # e.g. "Line1\nLine"
+        # 
         # If a user has connected from the client IP address before, 
         # and there are dynamicMotds specified here, then we return
         # only dynamicMotds. If no dynamicMotds are specified we will
         # always show staticMotds.
-        staticMotd:
-            - This server is great!
-        dynamicMotd:
-            - Hi %s!
+#        staticMotd:
+#            - This server is great!
+#        dynamicMotd:
+#            - Hi %s!
+
+        # Optionally a player list can be sent back to the client
+        # (shown in the mouse over for the server version in the client).
+        # We support 3 differents types of player list.
+
+        # Maximum number of players to report to the client.
+#        maxPlayers: 200
+
+        # List of servers to include players from.
+        # If not specified, all servers are counted.
+        # server names must match those in bungee's config.yml
+#        playerListNetworkServers: 
+#            - server1
+#            - server2
+
+        # None, the default.
+#        playerListType: NONE
+
+        # Players, show player names
+        # playerListServers is an optional list of servers to select
+        # players from.
+        # maxPlayerList is the maximum number of players to return.
+#        playerListType: PLAYERS
+#        maxPlayerList: 10
+
+        # Fixed, show a fixed message.
+        # These are all format strings with two parameters
+        # 1 - Number of players.
+        # 2 - Maximum number of players.
+        # You can use minecraft format codes with § here.
+#        playerListType: FIXED
+#        playerListFixed:
+#            - 'line1 (%d/%d)'
+#            - 'line2'
+
+        # Show player counts on the network per server.
+#        playerListType: NETWORK
+        # Header, these are format strings with 2 parameters
+        # 1 - Number of players.
+        # 2 - Maximum number of players.
+#        playerListNetworkHeader:
+#            - '=== YourNetworkName (%d/%d) ==='
+        # Server entry, this is a format string with 3 parameters.
+        # 1 - Server name.
+        # 2 - player count.
+        # 3 - maximum player count.
+#        playerListNetworkServerFormat: '%s (%d/%d)'
+        # Footer, these are format strings with 2 parameters
+        # 1 - Number of players.
+        # 2 - Maximum number of players.
+#        playerListNetworkFooter:
+#            - '==============================='
+
 
 # List of servers by IP : Port. 
 #
 # * means all servers or all ports.
 # DNS names are not supported, you must use IP addresses.
+# 
+# This is effectively rules for choosing a profile.
 servers:
     '*:*':
         # Name of default profile for this virtual host.
