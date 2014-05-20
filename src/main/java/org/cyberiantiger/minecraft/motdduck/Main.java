@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import net.md_5.bungee.api.Favicon;
 import net.md_5.bungee.api.ServerPing;
@@ -25,6 +26,7 @@ import net.md_5.bungee.event.EventHandler;
 import org.cyberiantiger.minecraft.motdduck.config.Config;
 import org.cyberiantiger.minecraft.motdduck.config.Data;
 import org.cyberiantiger.minecraft.motdduck.config.Profile;
+import org.cyberiantiger.minecraft.motdduck.config.User;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
 import org.yaml.snakeyaml.introspector.BeanAccess;
@@ -91,7 +93,7 @@ public class Main extends Plugin implements Listener {
                 this.userData = new Data();
             }
         } else {
-            this.userData = new Data();
+            this.userData = new Data(new HashMap<String, User>());
         }
     }
 
@@ -145,7 +147,7 @@ public class Main extends Plugin implements Listener {
             if (profile != null) {
                 ServerPing response = e.getResponse();
                 Favicon icon = profile.getFavicon(this);
-                Protocol protocol = profile.getProtocol(this);
+                Protocol protocol = profile.getProtocol(this, c);
                 String user = userData.getPlayer(c.getAddress().getAddress().getHostAddress());
                 String motd;
                 if (user != null) {

@@ -13,9 +13,9 @@ import java.util.Comparator;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.Set;
-import java.util.UUID;
 import java.util.logging.Level;
 import javax.imageio.ImageIO;
 import net.md_5.bungee.api.Favicon;
@@ -24,6 +24,7 @@ import net.md_5.bungee.api.ServerPing.PlayerInfo;
 import net.md_5.bungee.api.ServerPing.Players;
 import net.md_5.bungee.api.ServerPing.Protocol;
 import net.md_5.bungee.api.config.ServerInfo;
+import net.md_5.bungee.api.connection.PendingConnection;
 import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.connection.Server;
 import org.cyberiantiger.minecraft.motdduck.Main;
@@ -38,14 +39,14 @@ public class Profile {
             new Comparator<PlayerInfo>() {
                 @Override
                 public int compare(PlayerInfo o1, PlayerInfo o2) {
-                    return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+                    return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
                 }
             };
     private static final Comparator<ServerInfo> SERVER_COMPARATOR =
             new Comparator<ServerInfo>() {
                 @Override
                 public int compare(ServerInfo o1, ServerInfo o2) {
-                    return o1.getName().toLowerCase().compareTo(o2.getName().toLowerCase());
+                    return String.CASE_INSENSITIVE_ORDER.compare(o1.getName(), o2.getName());
                 }
             };
     private static final String DEFAULT_NETWORK_SERVER_FORMAT = "%s (%d/%d)";
@@ -118,8 +119,7 @@ public class Profile {
 
     }
     private String icon;
-    private String protocolName;
-    private int protocolVersion;
+    private Map<Integer, DuckProtocol> protocolVersions;
     private List<String> dynamicMotd;
     private List<String> staticMotd;
     private int maxPlayers;
@@ -132,11 +132,8 @@ public class Profile {
     private List<String> playerListNetworkFooter;
     private String playerListNetworkServerFormat;
 
-
     private transient boolean loadedFavicon;
     private transient Favicon favicon;
-    private transient boolean loadedProtocol;
-    private transient Protocol protocol;
     private transient boolean loadedPlayerList;
     private transient Set<ServerInfo> playerListServersSet;
     private transient PlayerListType playerListTypeEnum;
@@ -170,16 +167,20 @@ public class Profile {
         return favicon;
     }
 
-    public Protocol getProtocol(Main plugin) {
+    public Protocol getProtocol(Main plugin, PendingConnection c) {
         synchronized(this) {
-            if (!loadedProtocol) {
-                if (protocolName != null) {
-                    protocol = new Protocol(protocolName, protocolVersion);
+            if (protocolVersions == null) {
+                return null;
+            } else {
+                DuckProtocol result;
+                if (protocolVersions.containsKey(c.getVersion())) {
+                    result = protocolVersions.get(c.getVersion());
+                } else {
+                    result = protocolVersions.get(0);
                 }
-                loadedProtocol = true;
+                return result == null ? null : result.asProtocol();
             }
         }
-        return protocol;
     }
 
     public String getDynamicMotd() {

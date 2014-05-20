@@ -1,14 +1,44 @@
+# List of profiles
+#
+# Most keys are optional and if omitted will simply leave 
+# the default values in the ServerPingResponse
 profiles:
-        default:
-                icon: server.png
-                protocolName: 1.7.2
-                protocolVersion: 4
-                staticMotd:
-                        - This server is great!
-                dynamicMotd:
-                        - Hi %s!
+    default:
+        # Favourite icon, this must be a 64x64 png file, which can be found
+        # in plugins/DuckChat
+        icon: server.png
+        # List of client protocol versions, and what version to
+        # reply with for each version, if there is a value for 0
+        # then this protocol version is returned if we don't 
+        # have an exact match for the client's version.
+#        protocolVersions:
+#            0:
+#                name: '1.7.2'
+#                version: 4
+#            5:
+#                name: 'Downgrade to 1.7.2'
+#                version: 4
+        # List of messages of the day.
+        # 
+        # Format codes are supported, use the § symbol.
+        # 
+        # If a user has connected from the client IP address before, 
+        # and there are dynamicMotds specified here, then we return
+        # only dynamicMotds. If no dynamicMotds are specified we will
+        # always show staticMotds.
+        staticMotd:
+            - This server is great!
+        dynamicMotd:
+            - Hi %s!
+
+# List of servers by IP : Port. 
+#
+# * means all servers or all ports.
+# DNS names are not supported, you must use IP addresses.
 servers:
-        '*:*':
-                defaultProfile: default
-                namedHosts:
-                        your.server.here: default
+    '*:*':
+        # Name of default profile for this virtual host.
+        defaultProfile: default
+        # List of profiles for forcedHosts section in bungee's config.yml
+        namedHosts:
+            your.server.here: default
