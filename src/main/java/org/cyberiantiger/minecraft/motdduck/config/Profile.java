@@ -180,16 +180,16 @@ public class Profile {
         }
     }
 
-    public String getDynamicMotd() {
-        if (dynamicMotd != null)  {
-            return dynamicMotd.get(RNG.get().nextInt(dynamicMotd.size()));
+    public String getDynamicMotd(String user) {
+        if (dynamicMotd != null && !dynamicMotd.isEmpty())  {
+            return String.format(dynamicMotd.get(RNG.get().nextInt(dynamicMotd.size())), user);
         } else {
-            return getStaticMotd();
+            return null;
         }
     }
 
     public String getStaticMotd() {
-        if (staticMotd != null) {
+        if (staticMotd != null && !staticMotd.isEmpty()) {
             return staticMotd.get(RNG.get().nextInt(staticMotd.size()));
         } else {
             return null;

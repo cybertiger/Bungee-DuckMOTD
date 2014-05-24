@@ -149,11 +149,11 @@ public class Main extends Plugin implements Listener {
                 Favicon icon = profile.getFavicon(this);
                 Protocol protocol = profile.getProtocol(this, c);
                 String user = userData.getPlayer(c.getAddress().getAddress().getHostAddress());
-                String motd;
+                String motd = null;
                 if (user != null) {
-                    motd = profile.getDynamicMotd();
-                    motd = String.format(motd, user);
-                } else {
+                    motd = profile.getDynamicMotd(user);
+                } 
+                if (motd == null) {
                     motd = profile.getStaticMotd();
                 }
                 Players players = profile.getPlayers(this);
