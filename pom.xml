@@ -75,10 +75,6 @@
 
     <repositories>
         <repository>
-            <id>sonatype-s</id>
-            <url>https://oss.sonatype.org/content/groups/public/</url>
-        </repository>
-        <repository>
             <id>cyberiantiger.repo</id>
             <url>http://cyberiantiger.org/maven/</url>
         </repository>
