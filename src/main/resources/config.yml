@@ -100,9 +100,13 @@ profiles:
 # 
 # This is effectively rules for choosing a profile.
 servers:
+    # Entries are of the format <ip address>:<port>
+    # * can be used as a wildcard for the entire host or port 
     '*:*':
         # Name of default profile for this virtual host.
         defaultProfile: default
         # List of profiles for forcedHosts section in bungee's config.yml
+        # entries are in <host>:<port> format.
+        # * can be used as a wildcard for any part of the host string.
         namedHosts:
-            your.server.here: default
+            'your.server.here:*': default
