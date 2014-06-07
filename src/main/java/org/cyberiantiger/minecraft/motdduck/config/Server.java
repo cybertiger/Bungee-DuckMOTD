@@ -38,7 +38,7 @@ public class Server {
         }
         InetSocketAddress namedVirtualHost = connection.getVirtualHost();
         if (namedVirtualHost != null) {
-            String namedHost = namedVirtualHost.getHostName() + ":" + namedVirtualHost.getPort();
+            String namedHost = namedVirtualHost.getHostName().toLowerCase() + ":" + namedVirtualHost.getPort();
             for (Map.Entry<Pattern, String> e : namedHostLookup.entrySet()) {
                 if (e.getKey().matcher(namedHost).matches()) {
                     return e.getValue();
@@ -50,6 +50,7 @@ public class Server {
 
     private Pattern asRegex(String glob) {
         StringBuilder pattern = new StringBuilder();
+        glob = glob.toLowerCase();
         for (int i = 0; i < glob.length(); i++) {
             char ch = glob.charAt(i);
             if (ch == '*') {
