@@ -35,7 +35,7 @@ public class Config {
         String portPart = host.substring(split+1);
         if (!"*".equals(hostPart)) {
             try {
-                InetAddress hostAddr = InetAddress.getByName(host);
+                InetAddress hostAddr = InetAddress.getByName(hostPart);
                 if (!hostAddr.equals(addr.getAddress())) {
                     return false;
                 }
