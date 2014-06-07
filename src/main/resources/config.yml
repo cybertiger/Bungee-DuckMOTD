@@ -58,9 +58,6 @@ profiles:
 #        playerListType: NONE
 
         # Players, show player names
-        # playerListServers is an optional list of servers to select
-        # players from.
-        # maxPlayerList is the maximum number of players to return.
 #        playerListType: PLAYERS
 #        maxPlayerList: 10
 
