@@ -18,6 +18,7 @@ import net.md_5.bungee.api.ServerPing.Players;
 import net.md_5.bungee.api.ServerPing.Protocol;
 import net.md_5.bungee.api.config.ListenerInfo;
 import net.md_5.bungee.api.connection.PendingConnection;
+import net.md_5.bungee.api.connection.ProxiedPlayer;
 import net.md_5.bungee.api.event.PostLoginEvent;
 import net.md_5.bungee.api.event.ProxyPingEvent;
 import net.md_5.bungee.api.plugin.Listener;
@@ -90,7 +91,9 @@ public class Main extends Plugin implements Listener {
                 this.userData = yaml.loadAs(new FileReader(dataFile), Data.class);
             } catch (IOException ex) {
                 getLogger().log(Level.SEVERE, "Error loading data", ex);
-                this.userData = new Data();
+            }
+            if (userData == null) {
+                userData = new Data();
             }
         } else {
             this.userData = new Data(new HashMap<String, User>());
@@ -134,8 +137,10 @@ public class Main extends Plugin implements Listener {
 
     @EventHandler
     public void onPostLoginEvent(PostLoginEvent e) {
-        e.getPlayer();
-        userData.addPlayer(e.getPlayer().getUniqueId(), e.getPlayer().getName(), e.getPlayer().getAddress().getAddress().getHostAddress());
+        ProxiedPlayer player = e.getPlayer();
+        if (player != null) {
+            userData.addPlayer(e.getPlayer().getUniqueId(), e.getPlayer().getName(), e.getPlayer().getAddress().getAddress().getHostAddress());
+        }
     }
 
     @EventHandler
