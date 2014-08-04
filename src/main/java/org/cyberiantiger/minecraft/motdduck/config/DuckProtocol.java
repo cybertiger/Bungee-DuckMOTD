@@ -12,8 +12,8 @@ import net.md_5.bungee.api.ServerPing.Protocol;
  */
 public class DuckProtocol {
 
-    private final String name = null;
-    private final int version = 0;
+    private String name;
+    private int version;
 
     private transient Protocol protocol;
 
