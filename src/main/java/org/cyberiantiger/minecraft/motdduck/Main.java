@@ -93,14 +93,17 @@ public class Main extends Plugin implements Listener {
                 getLogger().log(Level.SEVERE, "Error loading data", ex);
             }
             if (userData == null) {
-                userData = new Data();
+                userData = new Data(this);
             }
         } else {
-            this.userData = new Data(new HashMap<String, User>());
+            this.userData = new Data(this);
         }
     }
 
     public void saveData() {
+        if (userData != null) {
+            userData.save(getDataFile());
+        }
         try {
             Yaml yaml = new Yaml();
             yaml.setBeanAccess(BeanAccess.FIELD);

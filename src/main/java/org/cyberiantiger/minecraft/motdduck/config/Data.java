@@ -4,6 +4,9 @@
  */
 package org.cyberiantiger.minecraft.motdduck.config;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,6 +15,10 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.logging.Level;
+import org.cyberiantiger.minecraft.motdduck.Main;
+import org.yaml.snakeyaml.Yaml;
+import org.yaml.snakeyaml.introspector.BeanAccess;
 
 /**
  *
@@ -21,11 +28,16 @@ public class Data {
 
     private Map<String, User> data = new LinkedHashMap();
 
+    private final transient Main plugin;
     private transient Map<String, String> hostToUser;
 
-    public Data() {}
+    public Data(Main plugin) {
+        this.plugin = plugin;
+        data = new LinkedHashMap();
+    }
 
-    public Data(Map<String, User> data) {
+    public Data(Main plugin, Map<String, User> data) {
+        this.plugin = plugin;
         this.data = data;
     }
 
@@ -56,5 +68,20 @@ public class Data {
 
     public synchronized String getPlayer(String host) {
         return getHostToUser().get(host);
+    }
+
+    public synchronized void save(File dataFile) {
+        try {
+            Yaml yaml = new Yaml();
+            yaml.setBeanAccess(BeanAccess.FIELD);
+            FileWriter out = new FileWriter(dataFile);
+            try {
+                out.write(yaml.dumpAsMap(this));
+            } finally  {
+                out.close();
+            }
+        } catch (IOException ex) {
+            plugin.getLogger().log(Level.WARNING, "Failed to write userdata file: " + dataFile, ex);
+        }
     }
 }
