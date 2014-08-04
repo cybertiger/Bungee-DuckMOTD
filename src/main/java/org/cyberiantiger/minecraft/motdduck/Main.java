@@ -10,7 +10,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.logging.Level;
 import net.md_5.bungee.api.Favicon;
 import net.md_5.bungee.api.ServerPing;
@@ -27,9 +26,9 @@ import net.md_5.bungee.event.EventHandler;
 import org.cyberiantiger.minecraft.motdduck.config.Config;
 import org.cyberiantiger.minecraft.motdduck.config.Data;
 import org.cyberiantiger.minecraft.motdduck.config.Profile;
-import org.cyberiantiger.minecraft.motdduck.config.User;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.CustomClassLoaderConstructor;
+import org.yaml.snakeyaml.error.YAMLException;
 import org.yaml.snakeyaml.introspector.BeanAccess;
 
 /**
@@ -79,6 +78,8 @@ public class Main extends Plugin implements Listener {
             this.config = configLoader.loadAs(new FileReader(getConfigFile()), Config.class);
         } catch (IOException ex) {
             getLogger().log(Level.SEVERE, "Error loading configuration", ex);
+        } catch (YAMLException ex) {
+            getLogger().log(Level.SEVERE, "Error loading configuration", ex);
         }
     }
 
@@ -91,6 +92,8 @@ public class Main extends Plugin implements Listener {
                 this.userData = yaml.loadAs(new FileReader(dataFile), Data.class);
             } catch (IOException ex) {
                 getLogger().log(Level.SEVERE, "Error loading data", ex);
+            } catch (YAMLException ex) {
+                getLogger().log(Level.SEVERE, "Error loading configuration", ex);
             }
             if (userData == null) {
                 userData = new Data(this);
