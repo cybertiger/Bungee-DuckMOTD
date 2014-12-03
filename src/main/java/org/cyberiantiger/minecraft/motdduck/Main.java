@@ -90,6 +90,7 @@ public class Main extends Plugin implements Listener {
             yaml.setBeanAccess(BeanAccess.FIELD);
             try {
                 this.userData = yaml.loadAs(new FileReader(dataFile), Data.class);
+                userData.setPlugin(this);
             } catch (IOException ex) {
                 getLogger().log(Level.SEVERE, "Error loading data", ex);
             } catch (YAMLException ex) {

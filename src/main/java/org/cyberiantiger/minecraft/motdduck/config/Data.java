@@ -28,8 +28,11 @@ public class Data {
 
     private Map<String, User> data = new LinkedHashMap();
 
-    private final transient Main plugin;
+    private transient Main plugin;
     private transient Map<String, String> hostToUser;
+
+    public Data() {
+    }
 
     public Data(Main plugin) {
         this.plugin = plugin;
@@ -39,6 +42,14 @@ public class Data {
     public Data(Main plugin, Map<String, User> data) {
         this.plugin = plugin;
         this.data = data;
+    }
+
+    public Main getPlugin() {
+        return plugin;
+    }
+
+    public void setPlugin(Main plugin) {
+        this.plugin = plugin;
     }
 
     private Map<String,String> getHostToUser() {
